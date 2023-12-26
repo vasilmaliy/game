@@ -50,17 +50,21 @@ Ball.prototype.shoot = function(power, angle){
     this.moving = true;
 
     this.velocity = calculateBallVelocity(power,angle);
+    
+    console.log(100*Math.cos(angle)*power,100*Math.sin(angle)*power);
 }
 
 var calculateBallVelocity = function(power, angle){
 
     return new Vector2(100*Math.cos(angle)*power,100*Math.sin(angle)*power);
+
 }
 
 Ball.prototype.update = function(delta){
 
     this.updatePosition(delta);
 
+    // this.velocity.multiplyWith(1);
     this.velocity.multiplyWith(0.98);
 
 	if(this.moving && Math.abs(this.velocity.x) < 1 && Math.abs(this.velocity.y) < 1){
@@ -73,7 +77,10 @@ Ball.prototype.updatePosition = function(delta){
     if(!this.moving || this.inHole)
         return;
     var ball = this;
+    
     var newPos = this.position.add(this.velocity.multiply(delta));
+    // var newPos = this.position.add(this.velocity.multiply(0.0001));
+    
 
 
 	if(Game.policy.isInsideHole(newPos)){
@@ -92,7 +99,9 @@ Ball.prototype.updatePosition = function(delta){
     var collision = this.handleCollision(newPos);
 
     if(collision){
-		this.velocity.multiplyWith(0.95);
+		// this.velocity.multiplyWith(1);
+		 this.velocity.multiplyWith(0.95);
+		// this.velocity;
     }else{
     	this.position = newPos;
     }
@@ -101,6 +110,12 @@ Ball.prototype.updatePosition = function(delta){
 Ball.prototype.handleCollision = function(newPos){
 
 	var collision = false;
+
+    if ( this.color !== '#FFFFFF') {
+        console.log(this.color);
+        this.color = '#FF0000';
+        return true;
+    }
 
 	if(Game.policy.isXOutsideLeftBorder(newPos, this.origin)){
         this.velocity.x = -this.velocity.x;
